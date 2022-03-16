@@ -27,10 +27,10 @@
                         Convert From PDF
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">PDF to JPG</a>
-                        <a class="dropdown-item" href="#">PDF to WORD</a>
-                        <a class="dropdown-item" href="#">PDF to PPT</a>
-                        <a class="dropdown-item" href="#">PDF to EXCEL</a>
+                        <a class="dropdown-item" href="{% url 'PDFtoJPG' %}">PDF to JPG</a>
+                        <a class="dropdown-item" href="{% url 'PDFtoWORD' %}">PDF to WORD</a>
+                        <a class="dropdown-item" href="{% url 'PDFtoPPT' %}">PDF to PPT</a>
+                        <a class="dropdown-item" href="{% url 'PDFtoEXCEL' %}">PDF to EXCEL</a>
                     </div>
                 </li>
                 <!-- Convert To PDF -->
@@ -40,11 +40,11 @@
                         Convert To PDF
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">JPG to PDF</a>
-                        <a class="dropdown-item" href="#">WORD to PDF</a>
-                        <a class="dropdown-item" href="#">PPT to PDF</a>
-                        <a class="dropdown-item" href="#">EXCEL to PDF</a>
-                        <a class="dropdown-item" href="#">HTML to PDF</a>
+                        <a class="dropdown-item" href="{% url 'JPGtoPDF' %}">JPG to PDF</a>
+                        <a class="dropdown-item" href="{% url 'WORDtoPDF' %}">WORD to PDF</a>
+                        <a class="dropdown-item" href="{% url 'PPTtoPDF' %}">PPT to PDF</a>
+                        <a class="dropdown-item" href="{% url 'EXCELtoPDF' %}">EXCEL to PDF</a>
+                        <a class="dropdown-item" href="{% url 'HTMLtoPDF' %}">HTML to PDF</a>
                     </div>
                 </li>
                 <!-- Edit PDF -->
@@ -54,9 +54,9 @@
                         Edit PDF
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Rotate PDF</a>
-                        <a class="dropdown-item" href="#">Add Watermark to PDF</a>
-                        <a class="dropdown-item" href="#">Add PageNo to PDF</a>
+                        <a class="dropdown-item" href="{% url 'RotatePDF' %}">Rotate PDF</a>
+                        <a class="dropdown-item" href="{% url 'AddWatermarktoPDF' %}">Add Watermark to PDF</a>
+                        <a class="dropdown-item" href="{% url 'AddPageNo' %}">Add PageNo to PDF</a>
                     </div>
                 </li>
                 <!-- Extract From PDF -->
@@ -66,9 +66,9 @@
                         Extract From PDF
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Extract Text From PDF</a>
-                        <a class="dropdown-item" href="#">Extract Text From Image</a>
-                        <a class="dropdown-item" href="#">PDF to Audiobook</a>
+                        <a class="dropdown-item" href="{% url 'ExtractTextFromPDF' %}">Extract Text From PDF</a>
+                        <a class="dropdown-item" href="{% url 'ExtractTextFromImage' %}">Extract Text From Image</a>
+                        <a class="dropdown-item" href="{% url 'PDFtoAudiobook' %}">PDF to Audiobook</a>
                     </div>
                 </li>
                 <!-- Optimize PDF -->
@@ -78,7 +78,7 @@
                         Optimize PDF
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Compress PDF</a>
+                        <a class="dropdown-item" href="{% url 'CompressPDF' %}">Compress PDF</a>
                     </div>
                 </li>
                 <!-- Organize PDF -->
@@ -88,9 +88,9 @@
                         Organize PDF
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Merge PDF</a>
-                        <a class="dropdown-item" href="#">Split PDF</a>
-                        <a class="dropdown-item" href="#">Remove Pages From PDF</a>
+                        <a class="dropdown-item" href="{% url 'MergePDF' %}">Merge PDF</a>
+                        <a class="dropdown-item" href="{% url 'SplitPDF' %}">Split PDF</a>
+                        <a class="dropdown-item" href="{% url 'RemovePagesFromPDF' %}">Remove Pages From PDF</a>
                     </div>
                 </li>
                 <!-- PDF Security -->
@@ -100,9 +100,9 @@
                         PDF Security
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="#">Unlock PDF</a>
-                        <a class="dropdown-item" href="#">Protect PDF</a>
-                        <a class="dropdown-item" href="#">Sign PDF</a>
+                        <a class="dropdown-item" href="{% url 'UnlockPDF' %}">Unlock PDF</a>
+                        <a class="dropdown-item" href="{% url 'ProtectPDF' %}">Protect PDF</a>
+                        <a class="dropdown-item" href="{% url 'SignPDF' %}">Sign PDF</a>
                     </div>
                 </li>
             </ul>
@@ -124,5 +124,3 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
-
-        

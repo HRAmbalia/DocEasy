@@ -11,6 +11,7 @@ import pdfkit # to HTML to PDF
 import groupdocs_conversion_cloud # to EXCEL to PDF
 from shutil import copyfile # to EXCEL to PDF 
 import requests, json # to PPT to PDF, to WORD to PDF
+from homePageApp.models import uploaded_DocDetails
 MEDIA_PATH = os.path.join(os.getcwd(), "media", "")
 
 ########################################################################################
@@ -30,6 +31,30 @@ def return_Time():
     timestampStr = dateTimeObj.strftime("%d-%b-%Y (%H:%M:%S.%f)")
     return timestampStr
 
+########################################################################################
+
+# this function will DELETE the files which are  sent as parameter from media folder
+def delete_Files(file_list):
+    for file_name in file_list:
+        file_path = MEDIA_PATH + file_name
+        print("file_path : ", file_path)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+########################################################################################
+
+# this function will Save document details to database
+def save_DocDetails_to_DB(file_name, request, fileType):
+    uploaded_docDetails = uploaded_DocDetails.objects.all()
+    print("uploaded_docDetails : ", uploaded_docDetails)
+    file_path = MEDIA_PATH + file_name
+    print("file_path : ", file_path)
+    if request.user.is_authenticated:
+        docDetails_Object = uploaded_DocDetails(fileName=file_name, filePath=file_path, typrOfFile=fileType, UserName=request.user.username)
+    else:
+        docDetails_Object = uploaded_DocDetails(fileName=file_name, filePath=file_path, typrOfFile=fileType)
+    docDetails_Object.save()
+
 #JPG TO PDF#############################################################################
 #DOnE
 
@@ -39,18 +64,18 @@ def JPGtoPDF_Func(images):
     im1 = image.convert('RGB')
     image_list = []
     if ".jpg" in images[0]:
-        pdf_name = images[0].replace(".jpg","")
+        pdf_name = images[0].replace(".jpg",".pdf")
     elif ".JPG" in images[0]:
-        pdf_name = images[0].replace(".JPG","")
+        pdf_name = images[0].replace(".JPG",".pdf")
     elif ".jpeg" in images[0]:
-        pdf_name = images[0].replace(".jpeg","")
+        pdf_name = images[0].replace(".jpeg",".pdf")
     elif ".JPEG" in images[0]:
-        pdf_name = images[0].replace(".JPEG","")
+        pdf_name = images[0].replace(".JPEG",".pdf")
     elif ".png" in images[0]:
-        pdf_name = images[0].replace(".png","")
+        pdf_name = images[0].replace(".png",".pdf")
     elif ".PNG" in images[0]:
-        pdf_name = images[0].replace(".PNG","")
-    pdf_path = MEDIA_PATH + pdf_name + ".pdf"
+        pdf_name = images[0].replace(".PNG",".pdf")
+    pdf_path = MEDIA_PATH + pdf_name
     for img in images:
         image_path = MEDIA_PATH + img
         image = Image.open(image_path)
@@ -58,7 +83,8 @@ def JPGtoPDF_Func(images):
         image_list.append(im)
     image_list.pop(0)
     im1.save(pdf_path, save_all=True, append_images=image_list)
-    return pdf_path
+    delete_Files(images) # deletes user uploaded files
+    return pdf_name, pdf_path
 
 def JPGtoPDF(request):
     if request.method == 'POST' and request.FILES['images']:
@@ -80,9 +106,11 @@ def JPGtoPDF(request):
                 newFileName = img.name.replace(".PNG",(return_Time()+".PNG"))
             filename = fs.save(newFileName, img)
             uploaded_file.append(filename)
-        # print("Uploaded File : ", uploaded_file)
-        converted_pdf_path = JPGtoPDF_Func(uploaded_file)
-        # print("Multiple Image to PDF PATH : ", converted_pdf_path)
+        # print("Uploaded File : ", uploaded_file)       
+        converted_pdf_name, converted_pdf_path = JPGtoPDF_Func(uploaded_file)
+        print("converted_pdf_name : ", converted_pdf_name)
+        print("converted_pdf_path : ", converted_pdf_path)
+        save_DocDetails_to_DB(converted_pdf_name, request, "PDF") # Saves pdf details to database
     else:
         return render(request, 'JPGtoPDF.html')
 
@@ -91,8 +119,8 @@ def JPGtoPDF(request):
 
 def WORDToPDF_Func(filename):
     word_path = MEDIA_PATH + filename
-    pdf_name = filename.replace(".docx","")
-    pdf_path = MEDIA_PATH + pdf_name + ".pdf"
+    pdf_name = filename.replace(".docx",".pdf")
+    pdf_path = MEDIA_PATH + pdf_name
     instructions = {
         'parts': [
             {
@@ -121,7 +149,12 @@ def WORDToPDF_Func(filename):
     else:
         print(response.text)
         exit()
-    return pdf_path
+    #
+    to_delete_files = []
+    to_delete_files.append(filename)
+    delete_Files(to_delete_files)  # deletes user uploaded files
+    #
+    return pdf_name, pdf_path
 
 def WORDtoPDF(request):
     if request.method == 'POST' and request.FILES['myWordFile']:
@@ -129,9 +162,11 @@ def WORDtoPDF(request):
         fs = FileSystemStorage()
         uploaded_word_file = request.FILES['myWordFile']
         newFileName = uploaded_word_file.name.replace(".docx",(return_Time()+".docx"))
-        filename = fs.save(newFileName, uploaded_word_file)
-        converted_pdf_path = WORDToPDF_Func(filename)
-        print("HTML to PDF PATH : ", converted_pdf_path)
+        file_name = fs.save(newFileName, uploaded_word_file)
+        converted_pdf_name, converted_pdf_path = WORDToPDF_Func(file_name)
+        print("converted_pdf_name : ", converted_pdf_name)
+        print("converted_pdf_path : ", converted_pdf_path)
+        save_DocDetails_to_DB(converted_pdf_name, request, "PDF") # Saves pdf details to database
     else:
         return render(request, 'WORDtoPDF.html')
 
@@ -140,10 +175,15 @@ def WORDtoPDF(request):
 
 def HTMLToPDF_Func(filename):
     html_path = MEDIA_PATH + filename
-    pdf_name = filename.replace(".html","")
-    pdf_path = MEDIA_PATH + pdf_name + ".pdf"
+    pdf_name = filename.replace(".html",".pdf")
+    pdf_path = MEDIA_PATH + pdf_name
     pdfkit.from_file(html_path, pdf_path)
-    return pdf_path
+    #
+    to_delete_files = []
+    to_delete_files.append(filename)
+    delete_Files(to_delete_files)  # deletes user uploaded files
+    #
+    return pdf_name, pdf_path
 
 def HTMLtoPDF(request):
     if request.method == 'POST' and request.FILES['myHtmlFile']:
@@ -151,9 +191,11 @@ def HTMLtoPDF(request):
         fs = FileSystemStorage()
         html_file = request.FILES['myHtmlFile']
         newFileName = html_file.name.replace(".html",(return_Time()+".html"))
-        filename = fs.save(newFileName, html_file)
-        converted_pdf_path = HTMLToPDF_Func(filename)
-        print("HTML to PDF PATH : ", converted_pdf_path)
+        file_name = fs.save(newFileName, html_file)
+        converted_pdf_name, converted_pdf_path = HTMLToPDF_Func(file_name)
+        print("converted_pdf_name : ", converted_pdf_name)
+        print("converted_pdf_path : ", converted_pdf_path)
+        save_DocDetails_to_DB(converted_pdf_name, request, "PDF") # Saves pdf details to database
     else:
         return render(request, 'HTMLtoPDF.html')
 
@@ -163,10 +205,10 @@ def HTMLtoPDF(request):
 def PPTtoPDF_Func(filename):
     ppt_path = MEDIA_PATH + filename
     if ".pptx" in filename:
-        pdf_name = filename.replace(".pptx","")
+        pdf_name = filename.replace(".pptx",".pdf")
     elif ".ppt" in filename:
-        pdf_name = filename.replace(".ppt","")
-    pdf_path = MEDIA_PATH + pdf_name + ".pdf"
+        pdf_name = filename.replace(".ppt",".pdf")
+    pdf_path = MEDIA_PATH + pdf_name
     instructions = {
         'parts': [
             {
@@ -195,7 +237,12 @@ def PPTtoPDF_Func(filename):
     else:
         print(response.text)
         exit()
-    return pdf_path
+    #
+    to_delete_files = []
+    to_delete_files.append(filename)
+    delete_Files(to_delete_files)  # deletes user uploaded files
+    #
+    return pdf_name, pdf_path
 
 def PPTtoPDF(request):
     if request.method == 'POST' and request.FILES['myPPT']:
@@ -206,22 +253,24 @@ def PPTtoPDF(request):
             newFileName = uploaded_ppt.name.replace(".pptx",(return_Time()+".pptx"))
         elif ".ppt" in uploaded_ppt.name:
             newFileName = uploaded_ppt.name.replace(".ppt",(return_Time()+".ppt"))
-        filename = fs.save(newFileName, uploaded_ppt)
-        converted_pdf_path = PPTtoPDF_Func(filename)
-        print("PPT to PDF PATH : ", converted_pdf_path)
+        file_name = fs.save(newFileName, uploaded_ppt)
+        converted_pdf_name, converted_pdf_path = PPTtoPDF_Func(file_name)
+        print("converted_pdf_name : ", converted_pdf_name)
+        print("converted_pdf_path : ", converted_pdf_path)
+        save_DocDetails_to_DB(converted_pdf_name, request, "PDF") # Saves pdf details to database
     else:
         return render(request, 'PPTtoPDF.html')
 
 #EXCEL to PDF###########################################################################
 #DOnE
 
-def excelToPDFFunc(filename):
+def excelToPDF_Func(filename):
     excel_path = MEDIA_PATH + filename
-    if ".xls" in filename:
-        pdf_name = filename.replace(".xls","")
-    elif ".csv" in filename:
-        pdf_name = filename.replace(".csv","")
-    pdf_path = MEDIA_PATH + pdf_name + ".pdf"
+    if ".xlsx" in filename:
+        pdf_name = filename.replace(".xlsx",".pdf")
+    elif ".xls" in filename:
+        pdf_name = filename.replace(".xls",".pdf")
+    pdf_path = MEDIA_PATH + pdf_name
     client_id = "2e818d52-2be0-4ef1-97c1-1778fb591bef"
     client_key = "a898e4b606d84a88d4bca3e2476394c2"
     convert_api = groupdocs_conversion_cloud.ConvertApi.from_keys(client_id, client_key)
@@ -231,20 +280,27 @@ def excelToPDFFunc(filename):
         copyfile(result, pdf_path)
     except groupdocs_conversion_cloud.ApiException as e:
         print("Exception when calling get_supported_conversion_types: {0}".format(e.message))
-    return pdf_path
+    #
+    to_delete_files = []
+    to_delete_files.append(filename)
+    delete_Files(to_delete_files)  # deletes user uploaded files
+    #
+    return pdf_name, pdf_path
 
 def EXCELtoPDF(request):
     if request.method == 'POST' and request.FILES['myExcelFile']:
         uploaded_file = []
         fs = FileSystemStorage()
         origial_excel = request.FILES['myExcelFile']
-        if ".xls" in origial_excel.name:
-            newFileName = origial_excel.name.replace(".xls",(return_Time()+".xls"))
-        elif ".xlsx" in origial_excel.name:
+        if ".xlsx" in origial_excel.name:
             newFileName = origial_excel.name.replace(".xlsx",(return_Time()+".xlsx"))
-        filename = fs.save(newFileName, origial_excel)
-        path = excelToPDFFunc(filename)
-        print("EXCEL to PDF Path : ", path)
+        elif ".xls" in origial_excel.name:
+            newFileName = origial_excel.name.replace(".xls",(return_Time()+".xls"))
+        file_name = fs.save(newFileName, origial_excel)
+        converted_pdf_name, converted_pdf_path = excelToPDF_Func(file_name)
+        print("converted_pdf_name : ", converted_pdf_name)
+        print("converted_pdf_path : ", converted_pdf_path)
+        save_DocDetails_to_DB(converted_pdf_name, request, "PDF")
     else:
         return render(request, 'EXCELtoPDF.html')
 

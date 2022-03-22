@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'homePageApp.middleware.deleteUserDocuments' # Custom added middleware
 ]
 
 ROOT_URLCONF = 'DocumentManipulation.urls'
@@ -84,8 +85,12 @@ WSGI_APPLICATION = 'DocumentManipulation.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE' : 'django.db.backends.mysql',
+        'NAME' : 'docEasy' , # Name of the database*
+        'USER': 'root', #user name for the database
+        'PASSWORD' : '', # password
+        'HOST' : '127.0.0.1', # IP address of the database
+        'PORT' : '3306', # port number of database server
     }
 }
 

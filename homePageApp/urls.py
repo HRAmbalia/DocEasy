@@ -26,6 +26,7 @@ from organizePDFApp import views as organizePDFAppViews
     # MERGE PDF
     # SPLIT PDF
     # REMOVE PAGES FROM PDF
+    # WATERMARK PDF
 from PDFSecurityApp import views as PDFSecurityAppViews
     # UnLOCK PDF
     # PROTECT PDF
@@ -63,6 +64,7 @@ urlpatterns = [
     path('MergePDF/', organizePDFAppViews.MergePDF, name='MergePDF'),
     path('SplitPDF/', organizePDFAppViews.SplitPDF, name='SplitPDF'),
     path('RemovePagesFromPDF/', organizePDFAppViews.RemovePagesFromPDF, name='RemovePagesFromPDF'),
+    path('WatermarkPDF/', organizePDFAppViews.WatermarkPDF, name='WatermarkPDF'),
     # PDFSecurityApp
     path('UnlockPDF/', PDFSecurityAppViews.UnlockPDF, name='UnlockPDF'),
     path('ProtectPDF/', PDFSecurityAppViews.ProtectPDF, name='ProtectPDF'),

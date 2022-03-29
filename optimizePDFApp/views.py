@@ -49,10 +49,9 @@ def save_DocDetails_to_DB(file_name, request, fileType):
         docDetails_Object = uploaded_DocDetails(fileName=file_name, filePath=file_path, typrOfFile=fileType)
     docDetails_Object.save()
 
-# QUERY : select * from homePageApp_uploaded_docdetails where uploadedTime > now() - interval 6 hour
 #COMPRESS PDF###########################################################################
+#DOnE
 
-# this function will return Ouptut file(compressed pdf) path
 def CompressPDF_Func(filename):
     pdf_path = MEDIA_PATH + filename
     public_key = 'project_public_0eed65dc44084dc02fccb90b7d4c7f3c_WMfTObe104a679401ae2b10300f3e09ecce2a'
@@ -72,10 +71,10 @@ def CompressPDF_Func(filename):
 
 def CompressPDF(request):
     if request.method == 'POST' and request.FILES['myPDF']:
-        fs = FileSystemStorage() # Saving uploaded file with updated names
+        fs = FileSystemStorage()
         uploaded_pdf = request.FILES['myPDF']
         newFileName = uploaded_pdf.name.replace(".pdf",(return_Time()+".pdf"))
-        file_name = fs.save(newFileName, uploaded_pdf)
+        file_name = fs.save(newFileName, uploaded_pdf) # Saving uploaded file with updated names
         compressed_pdf_name, compressed_pdf_path = CompressPDF_Func(file_name)
         print("converted_pdf_name : ", compressed_pdf_name)
         print("converted_pdf_path : ", compressed_pdf_path)

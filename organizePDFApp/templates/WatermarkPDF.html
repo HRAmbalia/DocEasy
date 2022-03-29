@@ -7,12 +7,13 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unlock PDF - DocEasy</title>
+  <title>Split PDF - DocEasy</title>
 </head>
 <body>
-  <h1>Unlock PDF</h1>
+  <h1>Watermark PDF</h1>
 </body>
 </html> -->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,7 +22,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unlock PDF</title>
+  <title>Watermark PDF</title>
   <style>
     * {
       box-sizing: border-box;
@@ -99,11 +100,23 @@
 </head>
 
 <body>
-
+  
   <br><br>
-  Upload single passworded PDF file :
+  Upload single Image file :
   <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
+    <!-- <label for="myfile">Select a file:</label>
+        <input type="file" id="myfile" name="myfile"> 
+        <input type="submit" id="sbmt"><br> -->
+    {% if uploaded_file_url %}
+    <!-- <h2>{{ uploaded_file_url }}</h2>
+            <embed src="/static/DSC_0003.jpg" width="90%" type="application/pdf">
+                <form action="donwload" method="post">
+                    {% csrf_token %}
+                    <input type="submit" id="sbmt">Downnload File<br>
+                </form> -->
+    {% endif %}
+
     <div class="wrapper">
       <div class="container">
         <h1>Upload a file</h1>
@@ -116,21 +129,15 @@
             </div>
             <!--<input type="file" id="file-upload">-->
             <p>Drag and drop files here, or :
-              <a><input type="file" id="myfile" name="myfile"></a>
+              <a><input type="file" id="myPDF" name="myPDF"></a>
+              <a><input type="file" id="mywatermark" name="mywatermark"></a>
             </p>
-            <p>
-              <input type="text" id="password" name="password" placeholder="Enter password">
-            </p>
-            <input type="submit" id="sbmt" value="Submit">
+            <input type="submit" id="sbmt" value="Submit"><br>
           </div>
         </div>
       </div>
     </div>
   </form>
-  {% if uploaded_file_url %}
-  <h2>{{ uploaded_file_url }}</h2>
-  {% endif %}
-
 </body>
 
 </html>

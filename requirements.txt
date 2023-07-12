@@ -1,0 +1,14 @@
+# pip3 install img2pdf
+# pip3 install PDFNetPython3
+# pip3 inatall pillow
+# pip3 install openpyxl
+# pip3 install tabula-py
+# pip3 install pylovepdf
+# pip3 install razorpay
+# pip3 install openpyxl
+# pip3 install img
+# pip3 install docs2pdf
+# pip3 install pyttsx3
+# pip3 install pdfkit
+# pip3 install tabula
+
